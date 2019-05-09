@@ -1,9 +1,31 @@
 package search;
 
 public class Utils {
+	
+	public static boolean contains(char[] a, char b) {
+		for (char c : a) {
+			if (c == b) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static char[] append(char[] a, char... b) {
+		char[] c = new char[a.length + b.length];
+		System.arraycopy(a, 0, c, 0, a.length);
+		System.arraycopy(b, 0, c, a.length, b.length);
+		return c;
+	}
+	
+	public static byte[] append(byte[] a, byte... b) {
+		byte[] c = new byte[a.length + b.length];
+		System.arraycopy(a, 0, c, 0, a.length);
+		System.arraycopy(b, 0, c, a.length, b.length);
+		return c;
+	}
 
 	public static String getMainURL(String url) {
-		//test
 		return url.split("#")[0].split("\\?|#", 2)[0];
 	}
 
@@ -31,6 +53,17 @@ public class Utils {
 			return "unknown" + Math.round((float) Math.random() * 1000000);
 		}
 		return parts[namePos];
+	}
+	
+	public static int compare(String a, String b) {
+		for (int i = 0; i < a.length() && i < b.length(); i++) {
+			int ai = (int) a.charAt(i);
+			int bi = (int) b.charAt(i);
+			if (ai != bi) {
+				return ai - bi;
+			}
+		}
+		return a.length() - b.length();
 	}
 
 }

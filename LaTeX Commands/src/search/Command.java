@@ -2,23 +2,23 @@ package search;
 
 public class Command {
 	
-	public static final short SQUARE_BRACKET = 1, CURLY_BRACKET = 2;
+	public static final byte SQUARE_BRACKET = 1, CURLY_BRACKET = 2;
 
 	private final String name, packageName;
 	private final boolean starrable;
-	private final short squareBracketCount, curlyBracketCount;
-	private final short[] brackets;
+	private final byte squareBracketCount, curlyBracketCount;
+	private final byte[] brackets;
 
-	public Command(String name, String packageName, boolean starrable, short[] brackets) {
+	public Command(String name, String packageName, boolean starrable, byte[] brackets) {
 		this.name = name;
 		this.packageName = packageName;
 		this.starrable = starrable;
 		this.brackets = brackets;
 		
-		short squareBracketCount = 0;
-		short curlyBracketCount = 0;
+		byte squareBracketCount = 0;
+		byte curlyBracketCount = 0;
 		
-		for (short s : brackets) {
+		for (byte s : brackets) {
 			if (s == SQUARE_BRACKET) {
 				squareBracketCount++;
 			} else if (s == CURLY_BRACKET) {
@@ -42,22 +42,22 @@ public class Command {
 		return starrable;
 	}
 
-	public short getSquareBracketCount() {
+	public byte getSquareBracketCount() {
 		return squareBracketCount;
 	}
 
-	public short getCurlyBracketCount() {
+	public byte getCurlyBracketCount() {
 		return curlyBracketCount;
 	}
 
-	public short[] getBrackets() {
+	public byte[] getBrackets() {
 		return brackets;
 	}
 	
 	@Override
 	public String toString() {
 		String out = name + (starrable ? "*" : "");
-		for (short s : brackets) {
+		for (byte s : brackets) {
 			if (s == SQUARE_BRACKET) {
 				out += "[]";
 			} else if (s == CURLY_BRACKET) {
@@ -71,7 +71,7 @@ public class Command {
 		String out = name + " " + packageName + " " + (starrable ? "*" : "-");
 		if (brackets.length > 0) {
 			out += " ";
-			for (short s : brackets) {
+			for (byte s : brackets) {
 				out += s + ",";
 			}
 			return out.substring(0, out.length() - 1);
