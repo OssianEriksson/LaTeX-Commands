@@ -3,6 +3,7 @@ package search;
 public class Utils {
 
 	public static String getMainURL(String url) {
+		//test
 		return url.split("#")[0].split("\\?|#", 2)[0];
 	}
 
