@@ -46,6 +46,17 @@ public class Utils {
 		}
 		return false;
 	}
+	
+	public static String getFolderName(String url) {
+		if (url.endsWith("/")) {
+			return url;
+		}
+		int lastSlash = url.lastIndexOf('/');
+		if (lastSlash < 0 ) {
+			return null;
+		}
+		return url.substring(0, lastSlash);
+	}
 
 	public static String getFolderName(String url, int namePos) {
 		String[] parts = url.split("/");

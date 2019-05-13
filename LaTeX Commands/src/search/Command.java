@@ -4,12 +4,13 @@ public class Command {
 	
 	public static final byte SQUARE_BRACKET = 1, CURLY_BRACKET = 2;
 
-	private final String name, packageName;
+	private final String name;
+	private final PackageName packageName;
 	private final boolean starrable;
 	private final byte squareBracketCount, curlyBracketCount;
 	private final byte[] brackets;
 
-	public Command(String name, String packageName, boolean starrable, byte[] brackets) {
+	public Command(String name, PackageName packageName, boolean starrable, byte[] brackets) {
 		this.name = name;
 		this.packageName = packageName;
 		this.starrable = starrable;
@@ -34,7 +35,7 @@ public class Command {
 		return name;
 	}
 
-	public String getPackageName() {
+	public PackageName getPackageName() {
 		return packageName;
 	}
 

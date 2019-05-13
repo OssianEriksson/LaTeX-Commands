@@ -3,10 +3,8 @@ package search;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 import java.util.concurrent.ExecutorService;
@@ -17,8 +15,8 @@ import org.jsoup.Jsoup;
 
 public class CommandFinder {
 
-	public static final char[] BREAK_COMMAND = { '.', ',', ':', ';', '(', ')', '/', '+', '-', '<', '>', '=', '^', '_', '\'', '\"', '´', '`', '#',
-			'$', '&', '%' };
+	public static final char[] BREAK_COMMAND = { '.', ',', ':', ';', '(', ')', '/', '+', '-', '<', '>', '=', '^', '_', '\'', '\"', 'ï¿½', '`', '#', '$', '&',
+			'%' };
 	public static final char[] BREAK_FIRST_CHAR = Utils.append(BREAK_COMMAND, '*', '{', '}', '[', ']');
 	public static final String[] INPUT;
 	public static final int PACKAGE_NAME_INDEX = 6, THREADS = 7;
@@ -45,7 +43,7 @@ public class CommandFinder {
 		Stack<List<Command>> queue = new Stack<List<Command>>();
 
 		List<Command> commands = new ArrayList<Command>();
-		Map<String, PackageNameList> packageNames = new HashMap<String, PackageNameList>();
+		PackageNameList packageNames = new PackageNameList("default");
 
 		new Thread(new Runnable() {
 
@@ -81,16 +79,6 @@ public class CommandFinder {
 							for (Command c : commands) {
 								System.out.println(c);
 							}
-							System.out.println("-----------------");
-							synchronized (packageNames) {
-								for (PackageNameList pNameList : packageNames.values()) {
-									System.out.println(pNameList.getOriginalName());
-									for (String s : pNameList.getPossibleNames()) {
-										System.out.println("\t" + s);
-									}
-								}
-							}
-							System.exit(0);
 						}
 
 						System.out.printf("%6d/%d\tCommand cound: %d\n", processedPackaged, urlCount, commands.size());
@@ -105,11 +93,12 @@ public class CommandFinder {
 	}
 
 	public static void findCommands(List<String> urls, Stack<List<Command>> queue, int packageNameIndex, AtomicInteger queueLength,
-			Map<String, PackageNameList> packageNames) {
+			PackageNameList packageNames) {
 		for (String url : urls) {
-			String[] urlParts = url.split("/");
-
-			String packageName = urlParts.length > packageNameIndex ? urlParts[packageNameIndex] : "unknown";
+			PackageName packageName;
+			synchronized (packageNames) {
+				packageName = packageNames.getPackageName(Utils.getFolderName(url));
+			}
 
 			queueLength.incrementAndGet();
 			pool.execute(new Runnable() {
@@ -118,7 +107,7 @@ public class CommandFinder {
 				public void run() {
 					List<Command> out1 = new ArrayList<Command>();
 					try {
-						findCommands(Jsoup.connect(url).ignoreContentType(true).get().text(), packageName, out1, packageNames);
+						findCommands(Jsoup.connect(url).ignoreContentType(true).get().text(), packageName, out1);
 
 						if (out1.size() > 0) {
 							synchronized (queue) {
@@ -135,7 +124,7 @@ public class CommandFinder {
 		}
 	}
 
-	public static void findCommands(String text, String packageName, List<Command> out, Map<String, PackageNameList> packageNames) {
+	public static void findCommands(String text, PackageName packageName, List<Command> out) {
 		String[] parts = text.split("\\\\");
 
 		for (String s : parts) {
@@ -196,13 +185,8 @@ public class CommandFinder {
 				if (p.length > 1) {
 					String pName = p[1].split("\\}")[0];
 
-					synchronized (packageNames) {
-						PackageNameList pNameList = packageNames.get(packageName);
-						if (pNameList == null) {
-							pNameList = new PackageNameList(packageName);
-							packageNames.put(packageName, pNameList);
-						}
-						pNameList.addPossibleName(pName);
+					synchronized (packageName) {
+						packageName.setName(pName);
 					}
 				}
 			}
@@ -220,7 +204,7 @@ public class CommandFinder {
 			int diff = Utils.compare(c.getName(), command.getName());
 			if (diff == 0) {
 				String mergedName = c.getName();
-				String mergedPackage = c.getPackageName();
+				PackageName mergedPackage = c.getPackageName();
 				boolean mergedStarrable = c.isStarrable() || command.isStarrable();
 
 				int addCurly;

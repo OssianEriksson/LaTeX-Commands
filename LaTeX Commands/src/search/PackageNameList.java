@@ -1,29 +1,29 @@
 package search;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PackageNameList {
 
-	private final String originalName;
-	private final List<String> possibleNames;
+	private final Map<String, PackageName> names;
+	private final String defaultName;
 
-	public PackageNameList(String originalName) {
-		this.originalName = originalName;
-		this.possibleNames = new ArrayList<String>();
+	public PackageNameList(String defaultName) {
+		this.defaultName = defaultName;
+		names = new HashMap<String, PackageName>();
 	}
 
-	public String getOriginalName() {
-		return originalName;
-	}
-
-	public List<String> getPossibleNames() {
-		return possibleNames;
-	}
-
-	public void addPossibleName(String name) {
-		if (!possibleNames.contains(name)) {
-			possibleNames.add(name);
+	public PackageName getPackageName(String url) {
+		PackageName n = names.get(url);
+		if (n == null) {
+			int lastSlash = url.lastIndexOf('/');
+			if (lastSlash < 0) {
+				n = new PackageName(url, defaultName);
+			} else {
+				n = new PackageName(url, getPackageName(url.substring(0, lastSlash)));
+			}
+			names.put(url, n);
 		}
+		return n;
 	}
 }
