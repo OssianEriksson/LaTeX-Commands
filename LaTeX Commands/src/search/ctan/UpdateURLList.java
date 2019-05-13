@@ -1,4 +1,4 @@
-package search;
+package search.ctan;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +14,8 @@ import java.util.concurrent.Executors;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import search.Utils;
 
 public class UpdateURLList {
 
