@@ -2,9 +2,7 @@ package search.ctan;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -21,7 +19,6 @@ import search.Command;
 import search.CommandHandeler;
 import search.PackageName;
 import search.PackageNameList;
-import search.Search;
 import search.Utils;
 
 public class CTANCommands {

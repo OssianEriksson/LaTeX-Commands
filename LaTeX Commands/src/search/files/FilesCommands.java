@@ -23,6 +23,7 @@ public class FilesCommands {
 
 	public static void searchCommands(List<Command> commands) {
 		searchFile("/chalmers/users/ossiane/Documents/Java/LaTeX/Documents/command_summary.txt", "default", commands);
+		System.out.println("(Files) Done");
 	}
 
 	public static void searchFile(String path, String packageName, List<Command> commands) {

@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -21,8 +22,8 @@ public class UpdateURLList {
 
 	public static final String[] FILE_EXTENSIONS = { ".sti", ".sty", ".def" };
 	public static final String OUTPUT = "/chalmers/users/ossiane/Documents/Java/LaTeX/V2";
-	public static RootURL[] ROOT = { new RootURL("http://ftp.acc.umu.se/mirror/CTAN/", 5,
-			new String[] { "http://ftp.acc.umu.se/mirror/CTAN/documentation/", "http://ftp.acc.umu.se/mirror/CTAN/fonts/" }) };
+	public static RootURL[] ROOT = {
+			new RootURL("http://ftp.acc.umu.se/mirror/CTAN/", 5, new String[] { "http://ftp.acc.umu.se/mirror/CTAN/documentation/" }) };
 	public static final int THREADS = 32;
 
 	public static void main(String[] args) {
@@ -50,7 +51,8 @@ public class UpdateURLList {
 				String mainUrl = Utils.getMainURL(url);
 
 				if (visited.contains(mainUrl) || !url.startsWith(root.getUrl()) || !mainUrl.endsWith("/")
-						|| Utils.startsWithAny(root.getUrl(), root.getBlacklist())) {
+						|| Utils.startsWithAny(root.getUrl(), root.getBlacklist())
+						|| !url.startsWith("http://ftp.acc.umu.se/mirror/CTAN/fonts/")) {
 					continue;
 				}
 
@@ -63,7 +65,7 @@ public class UpdateURLList {
 						String folderName = Utils.getFolderName(url, root.getFolderNamePos());
 
 						System.out.println("Starting: " + url);
-						
+
 						List<String> output = crawl(url);
 
 						if (output.size() == 0) {

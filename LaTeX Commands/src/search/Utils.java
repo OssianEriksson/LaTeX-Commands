@@ -1,5 +1,8 @@
 package search;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Utils {
 	
 	public static boolean contains(char[] a, char b) {
@@ -75,6 +78,11 @@ public class Utils {
 			}
 		}
 		return a.length() - b.length();
+	}
+	
+	public static int indexOf(String s, String regex, int startIndex) {
+	    Matcher matcher = Pattern.compile(regex).matcher(s.substring(startIndex));
+	    return matcher.find() ? matcher.start() + startIndex : -1;
 	}
 
 }
